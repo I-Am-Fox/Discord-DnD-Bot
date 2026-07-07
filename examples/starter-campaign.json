@@ -1,0 +1,87 @@
+{
+  "campaign": {
+    "id": "starter-campaign",
+    "name": "Starter Campaign",
+    "guildId": "replace-with-discord-guild-id",
+    "defaultVoiceChannelId": "replace-with-voice-channel-id"
+  },
+  "scenes": [
+    {
+      "id": "tavern-calm",
+      "campaignId": "starter-campaign",
+      "name": "Tavern Calm",
+      "type": "TOWN",
+      "defaultVolume": 70,
+      "transitionIn": "FADE_OUT_IN",
+      "transitionOut": "FADE_OUT_IN",
+      "loopMode": "LOOP_PLAYLIST",
+      "playlistId": "tavern-playlist"
+    },
+    {
+      "id": "forest-exploration",
+      "campaignId": "starter-campaign",
+      "name": "Forest Exploration",
+      "type": "EXPLORATION",
+      "defaultVolume": 65,
+      "transitionIn": "SMART_SCENE_SWITCH",
+      "transitionOut": "FADE_OUT_IN",
+      "loopMode": "LOOP_PLAYLIST",
+      "playlistId": "forest-playlist"
+    },
+    {
+      "id": "dungeon-tension",
+      "campaignId": "starter-campaign",
+      "name": "Dungeon Tension",
+      "type": "TENSION",
+      "defaultVolume": 60,
+      "transitionIn": "SMART_SCENE_SWITCH",
+      "transitionOut": "FADE_OUT_IN",
+      "loopMode": "LOOP_PLAYLIST",
+      "playlistId": "dungeon-playlist"
+    },
+    {
+      "id": "combat-standard",
+      "campaignId": "starter-campaign",
+      "name": "Combat Standard",
+      "type": "COMBAT",
+      "defaultVolume": 85,
+      "transitionIn": "SMART_SCENE_SWITCH",
+      "transitionOut": "FADE_OUT_IN",
+      "loopMode": "LOOP_PLAYLIST",
+      "playlistId": "combat-playlist"
+    },
+    {
+      "id": "boss-fight",
+      "campaignId": "starter-campaign",
+      "name": "Boss Fight",
+      "type": "BOSS",
+      "defaultVolume": 90,
+      "transitionIn": "SMART_SCENE_SWITCH",
+      "transitionOut": "FADE_OUT_IN",
+      "loopMode": "LOOP_PLAYLIST",
+      "playlistId": "boss-playlist"
+    },
+    {
+      "id": "victory",
+      "campaignId": "starter-campaign",
+      "name": "Victory",
+      "type": "VICTORY",
+      "defaultVolume": 80,
+      "transitionIn": "FADE_OUT_IN",
+      "transitionOut": "FADE_OUT_IN",
+      "loopMode": "NONE",
+      "playlistId": "victory-playlist"
+    },
+    {
+      "id": "long-rest",
+      "campaignId": "starter-campaign",
+      "name": "Long Rest",
+      "type": "AMBIENCE",
+      "defaultVolume": 50,
+      "transitionIn": "FADE_OUT_IN",
+      "transitionOut": "FADE_OUT_IN",
+      "loopMode": "LOOP_PLAYLIST",
+      "playlistId": "rest-playlist"
+    }
+  ]
+}

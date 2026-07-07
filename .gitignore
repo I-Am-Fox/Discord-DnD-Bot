@@ -1,4 +1,6 @@
 ### IntelliJ IDEA ###
+.idea/
+*.iml
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
@@ -27,3 +29,16 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Gradle ###
+.gradle/
+.tmp-gradle-wrapper/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+### Runtime ###
+.env
+.env.*
+!.env.example
+data/
+logs/
