@@ -5,11 +5,15 @@ import com.dndmusicbot.bot.audio.NoopAudioEngine;
 import com.dndmusicbot.bot.config.BotConfig;
 import com.dndmusicbot.bot.config.BotConfigLoader;
 import com.dndmusicbot.bot.config.JsonSupport;
+import com.dndmusicbot.bot.discord.DiscordBotService;
+import com.dndmusicbot.bot.discord.DiscordCommandRegistrar;
+import com.dndmusicbot.bot.discord.DiscordSlashCommandListener;
 import com.dndmusicbot.bot.persistence.CampaignRepository;
 import com.dndmusicbot.bot.persistence.JsonCampaignRepository;
 import com.dndmusicbot.bot.persistence.JsonSceneRepository;
 import com.dndmusicbot.bot.persistence.SceneRepository;
 import com.dndmusicbot.bot.playback.PlaybackService;
+import com.dndmusicbot.bot.scene.CampaignSelectionService;
 import com.dndmusicbot.bot.scene.CampaignService;
 import com.dndmusicbot.bot.scene.SceneService;
 import com.dndmusicbot.bot.scene.TransitionService;
@@ -36,15 +40,27 @@ public final class BotServerApplication {
         SceneRepository sceneRepository = new JsonSceneRepository(config.dataDir().resolve("scenes.json"), objectMapper);
 
         CampaignService campaignService = new CampaignService(campaignRepository);
+        CampaignSelectionService campaignSelectionService = new CampaignSelectionService(campaignService);
         SceneService sceneService = new SceneService(campaignService, sceneRepository);
         TransitionService transitionService = new TransitionService();
         PlaybackService playbackService = new PlaybackService(new NoopAudioEngine(), sceneService, transitionService);
 
         ApiServer apiServer = new ApiServer(config, campaignService, sceneService, playbackService);
+        DiscordSlashCommandListener discordListener = new DiscordSlashCommandListener(
+            config.discordCommandGuildId(),
+            new DiscordCommandRegistrar(),
+            campaignService,
+            campaignSelectionService,
+            sceneService,
+            playbackService
+        );
+        DiscordBotService discordBotService = new DiscordBotService(config, discordListener);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             log.info("Stopping D&D Music Bot server");
+            discordBotService.stop();
             apiServer.stop();
         }, "bot-server-shutdown"));
         apiServer.start();
+        discordBotService.start();
     }
 }

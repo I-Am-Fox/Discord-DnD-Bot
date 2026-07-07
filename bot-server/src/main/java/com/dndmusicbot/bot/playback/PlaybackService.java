@@ -1,6 +1,7 @@
 package com.dndmusicbot.bot.playback;
 
 import com.dndmusicbot.bot.audio.AudioEngine;
+import com.dndmusicbot.bot.audio.AudioSourcePolicy;
 import com.dndmusicbot.bot.audio.FadeOptions;
 import com.dndmusicbot.bot.audio.PlayOptions;
 import com.dndmusicbot.bot.audio.PlayerState;
@@ -27,12 +28,14 @@ public class PlaybackService {
     private final AudioEngine audioEngine;
     private final SceneService sceneService;
     private final TransitionService transitionService;
+    private final AudioSourcePolicy audioSourcePolicy;
     private final Map<String, PlaybackStateDto> sessions = new ConcurrentHashMap<>();
 
     public PlaybackService(AudioEngine audioEngine, SceneService sceneService, TransitionService transitionService) {
         this.audioEngine = audioEngine;
         this.sceneService = sceneService;
         this.transitionService = transitionService;
+        this.audioSourcePolicy = new AudioSourcePolicy();
     }
 
     public PlaybackStateDto join(JoinRequest request) {
@@ -50,7 +53,7 @@ public class PlaybackService {
 
     public PlaybackStateDto play(PlayRequest request) {
         String guildId = ValueChecks.requireText(request.guildId(), "guildId");
-        String queryOrUrl = ValueChecks.requireText(request.queryOrUrl(), "queryOrUrl");
+        String queryOrUrl = audioSourcePolicy.normalizePlayableQuery(request.queryOrUrl());
         TrackRef track = audioEngine.resolve(queryOrUrl).join();
         audioEngine.play(guildId, track, new PlayOptions(currentVolume(guildId), false, TransitionMode.NONE)).join();
         return update(guildId, current(guildId), PlaybackStatus.PLAYING, track.id(), null);

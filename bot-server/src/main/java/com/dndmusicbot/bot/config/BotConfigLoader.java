@@ -20,15 +20,18 @@ public final class BotConfigLoader {
         String dataDirValue = valueOrDefault(env, "DATA_DIR", "./data");
         String logLevel = valueOrDefault(env, "LOG_LEVEL", "INFO");
         int lavalinkPort = parsePort(valueOrDefault(env, "LAVALINK_PORT", "2333"), "LAVALINK_PORT");
+        boolean lavalinkSecure = parseBoolean(valueOrDefault(env, "LAVALINK_SECURE", "false"), "LAVALINK_SECURE");
 
         return new BotConfig(
             blankToNull(env.get("DISCORD_TOKEN")),
+            blankToNull(env.get("DISCORD_COMMAND_GUILD_ID")),
             apiToken,
             apiHost,
             apiPort,
             blankToNull(env.get("LAVALINK_HOST")),
             lavalinkPort,
             blankToNull(env.get("LAVALINK_PASSWORD")),
+            lavalinkSecure,
             Path.of(dataDirValue).toAbsolutePath().normalize(),
             logLevel
         );
@@ -61,5 +64,15 @@ public final class BotConfigLoader {
         } catch (NumberFormatException ex) {
             throw new ConfigurationException(name + " must be a valid port", ex);
         }
+    }
+
+    private static boolean parseBoolean(String value, String name) {
+        if ("true".equalsIgnoreCase(value)) {
+            return true;
+        }
+        if ("false".equalsIgnoreCase(value)) {
+            return false;
+        }
+        throw new ConfigurationException(name + " must be true or false");
     }
 }

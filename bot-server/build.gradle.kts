@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation(project(":shared"))
     implementation("io.javalin:javalin:7.2.2")
+    implementation("net.dv8tion:JDA:6.4.1")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.19.2")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.2")
     implementation("org.slf4j:slf4j-api:2.0.17")

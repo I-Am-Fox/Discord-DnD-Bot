@@ -2,7 +2,7 @@
 
 Java 25 Discord music bot for D&D scene-based audio, plus a local CLI controller.
 
-The project is intentionally built around scenes instead of only tracks. Phase 1 uses a `NoopAudioEngine` so the API, persistence, controller, and tests can be developed before wiring real Discord audio.
+The project is intentionally built around scenes instead of only tracks. The current server uses a `NoopAudioEngine` so the API, persistence, Discord commands, controller, and tests can be developed before wiring real audio.
 
 ## Requirements
 
@@ -36,13 +36,15 @@ DATA_DIR=./data
 LOG_LEVEL=INFO
 ```
 
-Reserved for later audio/Discord phases:
+Discord and later audio values:
 
 ```text
 DISCORD_TOKEN
+DISCORD_COMMAND_GUILD_ID
 LAVALINK_HOST
 LAVALINK_PORT
 LAVALINK_PASSWORD
+LAVALINK_SECURE
 ```
 
 ## Run Bot Server
@@ -51,6 +53,16 @@ LAVALINK_PASSWORD
 $env:BOT_API_TOKEN = "replace-with-a-long-random-token"
 .\gradlew.bat :bot-server:run
 ```
+
+To connect the Discord bot as well:
+
+```powershell
+$env:DISCORD_TOKEN = "replace-with-discord-bot-token"
+$env:DISCORD_COMMAND_GUILD_ID = "optional-test-guild-id"
+.\gradlew.bat :bot-server:run
+```
+
+Leave `DISCORD_COMMAND_GUILD_ID` blank to register commands globally. For development, guild-scoped registration is faster and easier to verify.
 
 Health check:
 
@@ -123,18 +135,63 @@ java -jar dnd-music-bot-server-all.jar
 
 Configure environment variables in the host panel or startup script. The bot server does not require the local controller to be running.
 
+## YouTube Playback
+
+YouTube playback is a requirement for this bot. The selected direction is Lavalink v4 with the `lavalink-devs/youtube-source` plugin, not direct YouTube extraction inside the bot process.
+
+Use the starter Lavalink config in:
+
+```text
+deploy/lavalink/application.yml.example
+```
+
+The bot process will connect to that node with `LAVALINK_HOST`, `LAVALINK_PORT`, `LAVALINK_PASSWORD`, and `LAVALINK_SECURE`. Real playback implementation belongs in Phase 3 as `LavalinkAudioEngine` behind the existing `AudioEngine` interface.
+
+More detail: `docs/youtube-playback.md`.
+
 ## Add Scenes
 
 Use the API or CLI controller during Phase 1. Data is stored as JSON under `DATA_DIR`.
 
 Example starter data is in `examples/starter-campaign.json`.
 
+## Discord Slash Commands
+
+Registered commands:
+
+```text
+/music join
+/music leave
+/music play <query>
+/music pause
+/music resume
+/music stop
+/music skip
+/music volume <level>
+/music now
+/music queue
+/music clear
+
+/scene start <name>
+/scene stop
+/scene switch <name> [transition]
+/scene stinger <name>
+/scene list
+/scene current
+
+/campaign create <name>
+/campaign select <name>
+/campaign current
+```
+
+Campaign selection is currently in memory per Discord guild. Use `/campaign create` or `/campaign select` before scene commands.
+
 ## Known Limitations
 
-- Phase 1 does not connect to Discord voice.
-- Phase 1 does not play real audio.
+- Real audio playback is not implemented yet.
+- JDA voice join/leave is wired for command flow, but real playback should use Lavalink v4 with `youtube-source`.
 - Crossfade and stingers are represented in the state model, but real audio behavior requires a production `AudioEngine`.
-- YouTube support is intentionally not assumed.
+- YouTube can be brittle for hosted bots; keep direct URLs, local/licensed files, or prepared non-YouTube sources available as fallback session material.
 
 ## Troubleshooting
 

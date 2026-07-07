@@ -16,7 +16,18 @@ class BotConfigLoaderTest {
         assertEquals("127.0.0.1", config.apiHost());
         assertEquals(8080, config.apiPort());
         assertEquals(2333, config.lavalinkPort());
+        assertEquals(false, config.lavalinkSecure());
         assertEquals("INFO", config.logLevel());
+    }
+
+    @Test
+    void loadsLavalinkSecureFlag() {
+        BotConfig config = BotConfigLoader.load(Map.of(
+            "BOT_API_TOKEN", "test-token",
+            "LAVALINK_SECURE", "true"
+        ));
+
+        assertEquals(true, config.lavalinkSecure());
     }
 
     @Test

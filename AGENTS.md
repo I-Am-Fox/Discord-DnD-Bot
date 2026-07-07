@@ -22,6 +22,17 @@ This repository is for a Java 25 Discord music bot and local controller for Dung
 - Unit tests that do not require Discord, Lavalink, PebbleHost, or network services.
 - Deployable `bot-server` fat jar through `:bot-server:shadowJar`.
 
+## Phase 2 Scope
+
+- JDA startup when `DISCORD_TOKEN` is configured.
+- Slash command registration for `/music`, `/scene`, and `/campaign`.
+- Guild-scoped command registration through optional `DISCORD_COMMAND_GUILD_ID`.
+- Command handlers must stay thin and call services.
+- Voice join/leave may use JDA voice connection placeholders before a real `AudioEngine` is implemented.
+- Do not stream real audio until the DAVE/Lavalink decision is made and implemented behind `AudioEngine`.
+- YouTube playback is required; target Lavalink v4 plus the `lavalink-devs/youtube-source` plugin.
+- Avoid direct JDA/LavaPlayer-only YouTube playback in the bot process.
+
 ## Runtime Rules
 
 - Bot server must run independently of the controller.
@@ -29,7 +40,8 @@ This repository is for a Java 25 Discord music bot and local controller for Dung
 - API auth is required for all non-health endpoints.
 - State is per guild/server.
 - Real audio implementation must sit behind `AudioEngine`.
-- Prefer Lavalink v4 for production audio if hosting is viable.
+- Prefer Lavalink v4 for production audio, with `youtube-source` for YouTube URLs and searches.
+- JDA audio connections require a DAVE-compatible setup before real audio playback.
 
 ## Validation
 
